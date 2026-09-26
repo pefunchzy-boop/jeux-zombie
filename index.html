@@ -4,432 +4,266 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BLOCKFORT 3D - Zombie Survival</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Teko:wght@600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-            overflow: hidden;
-            background-color: #080c14;
-            color: #ffffff;
-        }
+        body { font-family: 'Inter', sans-serif; user-select: none; overflow: hidden; background-color: #1e293b; color: #fff; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .font-teko { font-family: 'Teko', sans-serif; }
-        
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.8); border-radius: 8px; }
-        ::-webkit-scrollbar-thumb { background: #ef4444; border-radius: 8px; }
-        ::-webkit-scrollbar-thumb:hover { background: #dc2626; }
-
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.82);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-        }
-
-        #crosshair {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 18px;
-            height: 18px;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 20;
-        }
-        #crosshair::before, #crosshair::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 5px rgba(0,0,0,0.9);
-        }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.12); }
+        #crosshair { position: absolute; top: 50%; left: 50%; width: 18px; height: 18px; transform: translate(-50%, -50%); pointer-events: none; z-index: 20; }
+        #crosshair::before, #crosshair::after { content: ''; position: absolute; background: rgba(255, 255, 255, 0.9); box-shadow: 0 0 4px rgba(0,0,0,0.8); }
         #crosshair::before { left: 8px; top: 0; width: 2px; height: 18px; }
         #crosshair::after { top: 8px; left: 0; width: 18px; height: 2px; }
-
-        .btn-glow {
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
-            transition: all 0.2s ease-in-out;
-        }
-        .btn-glow:hover {
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.8);
-            transform: translateY(-2px);
-        }
+        .btn-glow { box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); transition: all 0.2s ease-in-out; }
+        .btn-glow:hover { box-shadow: 0 0 30px rgba(239, 68, 68, 0.8); transform: translateY(-2px); }
     </style>
 </head>
 <body class="h-full w-full select-none overflow-hidden bg-slate-950 text-slate-100">
 
-    <!-- Canvas container pour Three.js -->
     <div id="canvas-container" class="absolute inset-0 z-0"></div>
-
-    <!-- Crosshair -->
     <div id="crosshair" class="hidden"></div>
 
-    <!-- START & OVERLAY MENU -->
-    <div id="start-menu-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
-        <div class="relative w-full max-w-2xl max-h-[92vh] flex flex-col glass-panel rounded-2xl border border-red-500/30 shadow-2xl overflow-hidden my-auto">
-            
-            <div class="sticky top-0 z-10 bg-slate-900/95 border-b border-slate-800 p-4 sm:p-5 flex items-center justify-between">
+    <!-- MENU PRINCIPAL -->
+    <div id="start-menu-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md overflow-y-auto">
+        <div class="relative w-full max-w-2xl flex flex-col glass-panel rounded-2xl border border-red-500/30 shadow-2xl overflow-hidden">
+            <div class="bg-slate-900/95 border-b border-slate-800 p-5 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500 flex items-center justify-center text-red-500 text-xl font-black shadow-inner">
+                    <div class="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500 flex items-center justify-center text-red-500 text-xl font-black">
                         <i class="fa-solid fa-cube"></i>
                     </div>
                     <div>
-                        <h1 class="font-orbitron font-black text-xl sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-400 to-amber-300 tracking-wider">
-                            BLOCKFORT 3D
-                        </h1>
-                        <p class="text-[11px] text-slate-400 font-semibold tracking-wide">ZOMBIE SURVIVAL HD VOXEL</p>
+                        <h1 class="font-orbitron font-black text-xl text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-amber-300">BLOCKFORT 3D</h1>
+                        <p class="text-[11px] text-slate-400 font-semibold">ZOMBIE SURVIVAL HD VOXEL</p>
                     </div>
                 </div>
-                
-                <button id="btn-quick-start" class="btn-glow px-5 py-2.5 bg-gradient-to-r from-red-600 to-amber-600 text-white font-orbitron font-bold text-xs sm:text-sm rounded-xl flex items-center space-x-2">
-                    <i class="fa-solid fa-play"></i>
-                    <span>JOUER</span>
-                </button>
+                <button id="btn-quick-start" class="btn-glow px-5 py-2.5 bg-gradient-to-r from-red-600 to-amber-600 text-white font-orbitron font-bold text-xs rounded-xl">JOUER</button>
             </div>
 
-            <div class="p-4 sm:p-6 overflow-y-auto space-y-6">
-                <div class="p-4 bg-gradient-to-r from-red-950/70 via-slate-900/90 to-amber-950/40 rounded-xl border border-red-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div class="text-center sm:text-left">
-                        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30 mb-1">
-                            Vagues de Zombies
-                        </span>
-                        <h2 class="text-lg font-bold text-slate-100">Bâtissez vos défenses & massacrez la horde !</h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Posez du bois et de la pierre, tirez au fusil et survivez.</p>
+            <div class="p-6 space-y-5">
+                <div class="p-4 bg-gradient-to-r from-red-950/70 via-slate-900/90 to-amber-950/40 rounded-xl border border-red-500/30 flex items-center justify-between">
+                    <div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-500/20 text-red-400 border border-red-500/30">Mode Vagues</span>
+                        <h2 class="text-lg font-bold text-slate-100 mt-1">Bâtissez vos défenses & massacrez la horde !</h2>
                     </div>
-                    <button id="btn-main-start" class="w-full sm:w-auto btn-glow px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-orbitron font-black text-base rounded-xl transition flex items-center justify-center space-x-2 whitespace-nowrap">
-                        <i class="fa-solid fa-crosshairs text-lg"></i>
-                        <span>LANCER LA PARTIE</span>
+                    <button id="btn-main-start" class="btn-glow px-6 py-3 bg-red-600 hover:bg-red-500 text-white font-orbitron font-black text-sm rounded-xl flex items-center space-x-2">
+                        <i class="fa-solid fa-crosshairs"></i>
+                        <span>LANCER</span>
                     </button>
                 </div>
 
-                <!-- Sensibilité de la Souris -->
                 <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                    <label for="mouse-sensitivity" class="block text-xs font-orbitron font-semibold text-slate-300 uppercase mb-2 flex items-center justify-between">
-                        <span><i class="fa-solid fa-computer-mouse text-amber-400 mr-1"></i> Sensibilité de la Souris</span>
-                        <span id="sensitivity-value" class="font-mono text-amber-400 font-bold">0.0025</span>
+                    <label class="block text-xs font-orbitron font-semibold text-slate-300 mb-2 flex justify-between">
+                        <span>Sensibilité Souris</span>
+                        <span id="sensitivity-value" class="font-mono text-amber-400">0.0025</span>
                     </label>
                     <input type="range" id="mouse-sensitivity" min="0.0005" max="0.008" step="0.00025" value="0.0025" class="w-full accent-red-500 cursor-pointer">
                 </div>
 
-                <!-- Sélection de Classe -->
-                <div>
-                    <label class="block text-xs font-orbitron font-semibold text-slate-400 uppercase mb-3">
-                        <i class="fa-solid fa-shield-halved text-red-400 mr-1"></i> Choisissez votre Classe
-                    </label>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="class-card cursor-pointer p-3.5 rounded-xl border-2 border-red-500 bg-red-950/30 transition" data-class="soldier">
-                            <div class="flex items-center space-x-2 text-red-400 font-bold mb-1">
-                                <i class="fa-solid fa-person-rifle text-base"></i>
-                                <span>Soldat</span>
-                            </div>
-                            <p class="text-[11px] text-slate-300">Santé max +30, cadence élevée & 50 blocs de construction de départ.</p>
-                        </div>
-                        <div class="class-card cursor-pointer p-3.5 rounded-xl border border-slate-700 bg-slate-900/50 hover:border-slate-500 transition" data-class="builder">
-                            <div class="flex items-center space-x-2 text-amber-400 font-bold mb-1">
-                                <i class="fa-solid fa-hammer text-base"></i>
-                                <span>Bâtisseur</span>
-                            </div>
-                            <p class="text-[11px] text-slate-400">+100 Blocs de fort au départ (Bois & Pierre) pour construire un fort imprenable.</p>
-                        </div>
-                        <div class="class-card cursor-pointer p-3.5 rounded-xl border border-slate-700 bg-slate-900/50 hover:border-slate-500 transition" data-class="demolition">
-                            <div class="flex items-center space-x-2 text-orange-400 font-bold mb-1">
-                                <i class="fa-solid fa-bomb text-base"></i>
-                                <span>Artilleur</span>
-                            </div>
-                            <p class="text-[11px] text-slate-400">Dégâts accrus contre les vagues et munitions étendues.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Commandes -->
                 <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-800">
-                    <h3 class="text-xs font-orbitron font-semibold text-slate-400 uppercase mb-3">
-                        <i class="fa-solid fa-keyboard text-slate-400 mr-1"></i> Commandes du Jeu
-                    </h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                        <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-center">
-                            <span class="block font-mono text-red-400 font-bold">Z Q S D / WASD</span>
-                            <span class="text-[10px] text-slate-400">Se déplacer</span>
-                        </div>
-                        <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-center">
-                            <span class="block font-mono text-amber-400 font-bold">Clic Gauche / Droit</span>
-                            <span class="text-[10px] text-slate-400">Tirer / Poser un Bloc</span>
-                        </div>
-                        <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-center">
-                            <span class="block font-mono text-purple-400 font-bold">Shift / Ctrl</span>
-                            <span class="text-[10px] text-slate-400">Sprint / Accroupi</span>
-                        </div>
-                        <div class="p-2.5 bg-slate-950 rounded-lg border border-slate-800 text-center">
-                            <span class="block font-mono text-green-400 font-bold">1 / 2 / R / Espace</span>
-                            <span class="text-[10px] text-slate-400">Sélect. / Recharge / Saut</span>
-                        </div>
+                    <h3 class="text-xs font-orbitron font-semibold text-slate-400 mb-2">Commandes</h3>
+                    <div class="grid grid-cols-4 gap-2 text-xs text-center">
+                        <div class="p-2 bg-slate-950 rounded border border-slate-800"><span class="block text-red-400 font-bold">ZQSD</span>Déplacement</div>
+                        <div class="p-2 bg-slate-950 rounded border border-slate-800"><span class="block text-amber-400 font-bold">Clic G/D</span>Tirer / Poser</div>
+                        <div class="p-2 bg-slate-950 rounded border border-slate-800"><span class="block text-purple-400 font-bold">Shift</span>Courir</div>
+                        <div class="p-2 bg-slate-950 rounded border border-slate-800"><span class="block text-emerald-400 font-bold">1 / 2</span>Bois / Pierre</div>
                     </div>
                 </div>
-            </div>
-
-            <div class="sticky bottom-0 bg-slate-900/95 border-t border-slate-800 p-4 flex items-center justify-between gap-4">
-                <div class="text-xs text-slate-400 hidden sm:block">
-                    <span class="font-semibold text-slate-200">Conseil :</span> Avancez vers un bloc pour monter dessus !
-                </div>
-                <button id="btn-footer-start" class="w-full sm:w-auto btn-glow px-8 py-3 bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-orbitron font-black text-sm rounded-xl transition flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-gamepad"></i>
-                    <span>COMMENCER LA PARTIE</span>
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- IN-GAME HUD -->
+    <!-- HUD EN JEU -->
     <div id="hud" class="fixed inset-0 z-10 pointer-events-none hidden flex flex-col justify-between p-4">
         <div class="flex items-start justify-between w-full">
-            <div class="glass-panel p-3 rounded-2xl flex items-center space-x-4 min-w-[210px]">
-                <div class="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/50 flex items-center justify-center text-red-500 text-lg shadow-inner">
+            <div class="glass-panel p-3 rounded-2xl flex items-center space-x-4 min-w-[200px]">
+                <div class="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/50 flex items-center justify-center text-red-500">
                     <i class="fa-solid fa-heart"></i>
                 </div>
                 <div class="flex-1">
                     <div class="flex justify-between text-xs font-orbitron font-bold mb-1">
-                        <span class="text-slate-300">PV JOUEUR</span>
+                        <span class="text-slate-300">PV</span>
                         <span id="hud-health-txt" class="text-red-400">100 / 100</span>
                     </div>
                     <div class="w-full h-3 bg-slate-900 rounded-full overflow-hidden p-0.5 border border-slate-700">
-                        <div id="hud-health-bar" class="h-full bg-gradient-to-r from-red-600 via-amber-500 to-emerald-400 rounded-full transition-all duration-300 w-full"></div>
+                        <div id="hud-health-bar" class="h-full bg-gradient-to-r from-red-600 to-emerald-400 rounded-full w-full transition-all"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-panel px-6 py-2.5 rounded-2xl text-center border-amber-500/30 shadow-lg">
-                <div class="text-[10px] font-orbitron font-bold text-amber-400 tracking-wider">HORDE SURVIVAL</div>
-                <div class="text-2xl font-teko font-black text-white leading-none mt-0.5">
-                    VAGUE <span id="hud-wave-num" class="text-amber-400">1</span>
-                </div>
-                <div class="text-xs font-semibold text-slate-400 mt-0.5">
-                    SCORE: <span id="hud-score-num" class="text-slate-100 font-mono">0</span>
-                </div>
+            <div class="glass-panel px-6 py-2 rounded-2xl text-center border-amber-500/30">
+                <div class="text-[10px] font-orbitron font-bold text-amber-400">SURVIVAL</div>
+                <div class="text-2xl font-teko font-black text-white">VAGUE <span id="hud-wave-num" class="text-amber-400">1</span></div>
+                <div class="text-xs text-slate-400">SCORE: <span id="hud-score-num" class="text-slate-100 font-mono">0</span></div>
             </div>
 
-            <div class="glass-panel p-3 rounded-2xl flex items-center space-x-4 min-w-[180px]">
-                <div class="text-right flex-1">
-                    <div class="text-xs font-orbitron font-bold text-slate-300 mb-0.5">MUNITIONS</div>
-                    <div class="text-2xl font-teko font-black text-emerald-400 leading-none">
-                        <span id="hud-ammo-cur">30</span> / <span class="text-sm text-slate-400">120</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 text-lg">
-                    <i class="fa-solid fa-gun"></i>
+            <div class="glass-panel p-3 rounded-2xl flex items-center space-x-4">
+                <div class="text-right">
+                    <div class="text-xs font-orbitron font-bold text-slate-300">MUNITIONS</div>
+                    <div class="text-2xl font-teko font-black text-emerald-400"><span id="hud-ammo-cur">30</span> / 120</div>
                 </div>
             </div>
         </div>
 
         <div class="flex items-end justify-between w-full">
             <div class="glass-panel p-2 rounded-2xl pointer-events-auto flex items-center space-x-2">
-                <div id="block-select-wood" class="block-slot active border-2 border-amber-500 bg-amber-950/50 p-2.5 rounded-xl cursor-pointer text-center transition">
-                    <div class="w-9 h-9 rounded bg-amber-800/80 border border-amber-400 mb-1 flex items-center justify-center text-xs shadow-md">
-                        <i class="fa-solid fa-cubes text-amber-200"></i>
-                    </div>
+                <div id="slot-wood" class="border-2 border-amber-500 bg-amber-950/50 p-2 rounded-xl cursor-pointer text-center">
                     <span class="text-[10px] font-bold block text-slate-200">BOIS [1]</span>
                     <span id="count-wood" class="text-xs font-mono font-bold text-amber-400">50</span>
                 </div>
-                <div id="block-select-stone" class="block-slot border border-slate-700 bg-slate-900/50 p-2.5 rounded-xl cursor-pointer text-center transition">
-                    <div class="w-9 h-9 rounded bg-slate-600 border border-slate-400 mb-1 flex items-center justify-center text-xs shadow-md">
-                        <i class="fa-solid fa-cube text-slate-200"></i>
-                    </div>
+                <div id="slot-stone" class="border border-slate-700 bg-slate-900/50 p-2 rounded-xl cursor-pointer text-center">
                     <span class="text-[10px] font-bold block text-slate-200">PIERRE [2]</span>
                     <span id="count-stone" class="text-xs font-mono font-bold text-slate-400">25</span>
                 </div>
             </div>
-            <div class="hidden sm:block glass-panel px-4 py-2.5 rounded-xl text-xs text-slate-200 font-medium">
-                <span class="text-amber-400 font-bold">[Clic Droit]</span> Poser &nbsp;|&nbsp; 
-                <span class="text-red-400 font-bold">[Clic G.]</span> Tirer &nbsp;|&nbsp; 
-                <span class="text-purple-400 font-bold">[Shift]</span> Sprint &nbsp;|&nbsp; 
-                <span class="text-emerald-400 font-bold">[R]</span> Recharger
-            </div>
         </div>
     </div>
 
-    <!-- GAME OVER OVERLAY -->
-    <div id="game-over-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-md hidden">
-        <div class="w-full max-w-md glass-panel p-6 rounded-2xl border border-red-500/40 text-center shadow-2xl">
+    <!-- GAME OVER -->
+    <div id="game-over-overlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 hidden">
+        <div class="w-full max-w-md glass-panel p-6 rounded-2xl border border-red-500/40 text-center">
             <div class="w-16 h-16 rounded-full bg-red-600/20 border-2 border-red-500 flex items-center justify-center text-red-500 text-3xl mx-auto mb-4">
                 <i class="fa-solid fa-skull"></i>
             </div>
-            <h2 class="font-orbitron font-black text-2xl text-red-500 tracking-wider">ÉCHEC - MORT AU COMBAT</h2>
-            <p class="text-xs text-slate-400 mt-1">La horde a submergé votre position...</p>
-            
-            <div class="my-6 p-4 bg-slate-900/80 rounded-xl border border-slate-800 space-y-2 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Vagues Survectoriées:</span>
-                    <span id="end-stat-waves" class="font-bold text-amber-400">1</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-slate-400">Zombies Éliminés:</span>
-                    <span id="end-stat-kills" class="font-bold text-red-400">0</span>
-                </div>
-                <div class="flex justify-between border-t border-slate-800 pt-2">
-                    <span class="text-slate-200 font-bold">Score Final:</span>
-                    <span id="end-stat-score" class="font-bold text-emerald-400 font-mono text-base">0</span>
-                </div>
-            </div>
-
-            <button id="btn-restart" class="w-full btn-glow py-3.5 bg-gradient-to-r from-red-600 to-amber-600 text-white font-orbitron font-bold text-sm rounded-xl cursor-pointer">
-                RETOURNER À L'ÉCRAN D'ACCUEIL
-            </button>
+            <h2 class="font-orbitron font-black text-2xl text-red-500">VOUS ÊTES MORT</h2>
+            <button id="btn-restart" class="mt-6 w-full btn-glow py-3 bg-red-600 text-white font-orbitron font-bold rounded-xl">RECOMMENCER</button>
         </div>
     </div>
 
     <script>
-        // Sound Engine
-        class SoundEngine {
-            constructor() { this.ctx = null; }
-            init() {
-                if (!this.ctx) {
-                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                    if (AudioContextClass) this.ctx = new AudioContextClass();
-                }
-                if (this.ctx && this.ctx.state === 'suspended') {
-                    this.ctx.resume().catch(e => console.warn(e));
-                }
-            }
-        }
-        const audio = new SoundEngine();
-
-        // Sensibilité de la souris
+        let MOUSE_SENSITIVITY = 0.0025;
         const sensitivitySlider = document.getElementById('mouse-sensitivity');
         const sensitivityValueDisplay = document.getElementById('sensitivity-value');
-        let MOUSE_SENSITIVITY = parseFloat(sensitivitySlider.value);
         sensitivitySlider.addEventListener('input', (e) => {
             MOUSE_SENSITIVITY = parseFloat(e.target.value);
             sensitivityValueDisplay.textContent = MOUSE_SENSITIVITY.toFixed(5);
         });
 
-        // Génération de textures pixel art pour le terrain
-        function generatePixelTexture(type) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 32;
-            canvas.height = 32;
-            const ctx = canvas.getContext('2d');
-
-            if (type === 'grass_top') {
-                ctx.fillStyle = '#4a8523';
-                ctx.fillRect(0, 0, 32, 32);
-                for (let i = 0; i < 120; i++) {
-                    ctx.fillStyle = Math.random() > 0.5 ? '#3b6e1a' : '#579c29';
-                    ctx.fillRect(Math.floor(Math.random() * 32), Math.floor(Math.random() * 32), 2, 2);
-                }
-            } else if (type === 'wood') {
-                ctx.fillStyle = '#8a5229';
-                ctx.fillRect(0, 0, 32, 32);
-                for (let y = 0; y < 32; y += 8) {
-                    ctx.fillStyle = '#5c3517';
-                    ctx.fillRect(0, y, 32, 1);
-                }
-            } else if (type === 'stone') {
-                ctx.fillStyle = '#6e757c';
-                ctx.fillRect(0, 0, 32, 32);
-                for (let y = 0; y < 32; y += 8) {
-                    ctx.fillStyle = '#484d52';
-                    ctx.fillRect(0, y, 32, 1);
-                }
-            }
-
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.magFilter = THREE.NearestFilter;
-            texture.minFilter = THREE.NearestFilter;
-            return texture;
-        }
-
-        const texGrass = generatePixelTexture('grass_top');
-
-        // --- THREE.JS SCENE SETUP ---
+        // --- THREE.JS SETUP ---
         const container = document.getElementById('canvas-container');
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x080c14);
-        scene.fog = new THREE.FogExp2(0x080c14, 0.025);
+        scene.background = new THREE.Color(0x0f172a);
+        scene.fog = new THREE.FogExp2(0x0f172a, 0.015);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 5, 10);
+        camera.position.set(0, 2, 5);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         container.appendChild(renderer.domElement);
 
-        // Éclairage
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-
+        // Lumières
+        scene.add(new THREE.AmbientLight(0xffffff, 0.7));
         const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
-        dirLight.position.set(20, 40, 20);
+        dirLight.position.set(30, 50, 30);
         scene.add(dirLight);
 
-        // Terrain texturé
-        const floorGeo = new THREE.BoxGeometry(80, 2, 80);
-        const floorMat = new THREE.MeshStandardMaterial({ map: texGrass });
+        // Sol
+        const floorGeo = new THREE.BoxGeometry(100, 2, 100);
+        const floorMat = new THREE.MeshStandardMaterial({ color: 0x3b6e1a });
         const floorMesh = new THREE.Mesh(floorGeo, floorMat);
         floorMesh.position.set(0, -1, 0);
         scene.add(floorMesh);
 
-        // Boucle de rendu
+        // Contrôles Joueur FPS
+        let moveForward = false, moveBackward = false, moveLeft = false, moveRight = false, isRunning = false;
+        let pitch = 0, yaw = 0;
+        let playerHealth = 100, ammo = 30, score = 0, wave = 1;
+        let blocksWood = 50, blocksStone = 25, selectedBlockType = 'wood';
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyW' || e.code === 'KeyZ') moveForward = true;
+            if (e.code === 'KeyS') moveBackward = true;
+            if (e.code === 'KeyA' || e.code === 'KeyQ') moveLeft = true;
+            if (e.code === 'KeyD') moveRight = true;
+            if (e.code === 'ShiftLeft') isRunning = true;
+            if (e.code === 'Digit1') selectBlock('wood');
+            if (e.code === 'Digit2') selectBlock('stone');
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (e.code === 'KeyW' || e.code === 'KeyZ') moveForward = false;
+            if (e.code === 'KeyS') moveBackward = false;
+            if (e.code === 'KeyA' || e.code === 'KeyQ') moveLeft = false;
+            if (e.code === 'KeyD') moveRight = false;
+            if (e.code === 'ShiftLeft') isRunning = false;
+        });
+
+        let isPointerLocked = false;
+        renderer.domElement.addEventListener('click', () => {
+            if (!document.pointerLockElement && !startMenuOverlay.classList.contains('hidden') === false) {
+                renderer.domElement.requestPointerLock();
+            }
+        });
+
+        document.addEventListener('pointerlockchange', () => {
+            isPointerLocked = (document.pointerLockElement === renderer.domElement);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isPointerLocked) return;
+            yaw -= e.movementX * MOUSE_SENSITIVITY;
+            pitch -= e.movementY * MOUSE_SENSITIVITY;
+            pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, pitch));
+
+            camera.rotation.set(0, 0, 0);
+            camera.rotateY(yaw);
+            camera.rotateX(pitch);
+        });
+
+        function selectBlock(type) {
+            selectedBlockType = type;
+            document.getElementById('slot-wood').className = type === 'wood' ? 'border-2 border-amber-500 bg-amber-950/50 p-2 rounded-xl text-center' : 'border border-slate-700 bg-slate-900/50 p-2 rounded-xl text-center';
+            document.getElementById('slot-stone').className = type === 'stone' ? 'border-2 border-slate-400 bg-slate-800 p-2 rounded-xl text-center' : 'border border-slate-700 bg-slate-900/50 p-2 rounded-xl text-center';
+        }
+
+        // Boucle de Jeu & Déplacement fluide
+        let clock = new THREE.Clock();
         function animate() {
             requestAnimationFrame(animate);
+
+            const delta = clock.getDelta();
+            const speed = (isRunning ? 9 : 5) * delta;
+
+            const dir = new THREE.Vector3();
+            camera.getWorldDirection(dir);
+            dir.y = 0;
+            dir.normalize();
+
+            const sideDir = new THREE.Vector3(-dir.z, 0, dir.x);
+
+            if (moveForward) camera.position.addScaledVector(dir, speed);
+            if (moveBackward) camera.position.addScaledVector(dir, -speed);
+            if (moveLeft) camera.position.addScaledVector(sideDir, speed);
+            if (moveRight) camera.position.addScaledVector(sideDir, -speed);
+
+            camera.position.y = 2; // Maintenir hauteur fixe sol
+
             renderer.render(scene, camera);
         }
         animate();
 
-        // Redimensionnement fenêtre
+        // Gestion Menus
+        function startGame() {
+            startMenuOverlay.classList.add('hidden');
+            document.getElementById('hud').classList.remove('hidden');
+            document.getElementById('crosshair').classList.remove('hidden');
+            renderer.domElement.requestPointerLock();
+        }
+
+        document.getElementById('btn-quick-start').addEventListener('click', startGame);
+        document.getElementById('btn-main-start').addEventListener('click', startGame);
+        document.getElementById('btn-restart').addEventListener('click', () => location.reload());
+
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         });
-
-        // --- GESTION DES MENUS ET ÉTATS ---
-        const startMenuOverlay = document.getElementById('start-menu-overlay');
-        const hud = document.getElementById('hud');
-        const crosshair = document.getElementById('crosshair');
-        const gameOverOverlay = document.getElementById('game-over-overlay');
-
-        function resetGame() {
-            document.getElementById('hud-health-bar').style.width = '100%';
-            document.getElementById('hud-health-txt').textContent = '100 / 100';
-            document.getElementById('hud-wave-num').textContent = '1';
-            document.getElementById('hud-score-num').textContent = '0';
-            document.getElementById('count-wood').textContent = '50';
-            document.getElementById('count-stone').textContent = '25';
-            camera.position.set(0, 5, 10);
-        }
-
-        function startGame() {
-            audio.init();
-            resetGame();
-            startMenuOverlay.classList.add('hidden');
-            gameOverOverlay.classList.add('hidden');
-            hud.classList.remove('hidden');
-            crosshair.classList.remove('hidden');
-        }
-
-        function returnToMainMenu() {
-            resetGame();
-            gameOverOverlay.classList.add('hidden');
-            hud.classList.add('hidden');
-            crosshair.classList.add('hidden');
-            startMenuOverlay.classList.remove('hidden');
-        }
-
-        // Écouteurs de boutons
-        document.getElementById('btn-quick-start').addEventListener('click', startGame);
-        document.getElementById('btn-main-start').addEventListener('click', startGame);
-        document.getElementById('btn-footer-start').addEventListener('click', startGame);
-        document.getElementById('btn-restart').addEventListener('click', returnToMainMenu);
     </script>
 </body>
 </html>
